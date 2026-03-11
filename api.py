@@ -1,8 +1,11 @@
-from pydantic import BaseModel
+from typing import Optional
 from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float
+from sqlalchemy.orm import relationship, sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from pydantic import BaseModel
+
+# O resto do seu código vem aqui...
 
 # Configuração do Banco de Dados
 SQLALCHEMY_DATABASE_URL = "sqlite:///./carros.db"
@@ -57,6 +60,22 @@ class CarroModel(Base):
     serie = Column(String, nullable=True)
     trim = Column(String, nullable=True)
     tipoVeiculo = Column(String)
+
+    # Detalhes do Motor
+    modeloMotor = Column(String)
+    configuracaoMotor = Column(String)
+    numeroCilindros = Column(Integer)
+    
+    # Medidas técnicas (Float para aceitar números decimais)
+    potenciaHP = Column(Float)
+    potenciaKW = Column(Float)
+    cilindradaL = Column(Float)
+    cilindradaCC = Column(Integer)
+    cilindradaPC = Column(Float)
+    
+    # Combustíveis
+    principalCombustivel = Column(String)
+    secundarioCombustivel = Column(String, nullable=True)
 
     # Chave estrangeira ligando ao fabricante
     fabricante_id = Column(Integer, ForeignKey("fabricantes.id"))
@@ -126,6 +145,16 @@ def criar_carro(carro: CarroCreate, db: Session = Depends(get_db)):
         serie=carro.serie,
         trim=carro.trim,
         tipoVeiculo=carro.tipoVeiculo,
+        modeloMotor=carro.modeloMotor,
+        configuracaoMotor=carro.configuracaoMotor,
+        numeroCilindros=carro.numeroCilindros,
+        potenciaHP=carro.potenciaHP,
+        potenciaKW=carro.potenciaKW,
+        cilindradaL=carro.cilindradaL,
+        cilindradaCC=carro.cilindradaCC,
+        cilindradaPC=carro.cilindradaPC,
+        principalCombustivel=carro.principalCombustivel,
+        secundarioCombustivel=carro.secundarioCombustivel,
         fabricante_id=novo_fabricante.id 
     )
     db.add(novo_carro)
