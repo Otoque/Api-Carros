@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship, sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 
 # Configuração do Banco de Dados
@@ -66,7 +67,7 @@ class CarroModel(Base):
     configuracaoMotor = Column(String)
     numeroCilindros = Column(Integer)
     
-    # Medidas técnicas (Float para aceitar números decimais)
+    # Medidas técnicas 
     potenciaHP = Column(Float)
     potenciaKW = Column(Float)
     cilindradaL = Column(Float)
@@ -93,7 +94,7 @@ class FabricanteModel(Base):
     paisFabricante = Column(String)
     
     # Relação: Um fabricante pode ter vários carros
-    carros = relationship("CarroModel", back_populates="fabricante_obj")
+    carros = relationship("CarroModel", back_populates="fabricante_obj", lazy="select")
 # Cria as tabelas no arquivo .db
 Base.metadata.create_all(bind=engine)
 
@@ -114,7 +115,7 @@ def listar_carros(db: Session = Depends(get_db)):
 
 @app.get("/carros/aleatorio")
 def carro_aleatorio(db: Session = Depends(get_db)):
-    carro = db.query(CarroModel).order_by(func.random()).first()
+    carro = db.query(CarroModel).options(joinedload(CarroModel.fabricante_obj)).order_by(func.random()).first()
     if not carro:
         raise HTTPException(status_code=404, detail="Nenhum carro encontrado no banco") 
     return carro
