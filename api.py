@@ -4,8 +4,8 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship, sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
+from sqlalchemy import func
 
-# O resto do seu código vem aqui...
 
 # Configuração do Banco de Dados
 SQLALCHEMY_DATABASE_URL = "sqlite:///./carros.db"
@@ -112,12 +112,36 @@ def get_db():
 def listar_carros(db: Session = Depends(get_db)):
     return db.query(CarroModel).all()
 
+@app.get("/carros/aleatorio")
+def carro_aleatorio(db: Session = Depends(get_db)):
+    carro = db.query(CarroModel).order_by(func.random()).first()
+    if not carro:
+        raise HTTPException(status_code=404, detail="Nenhum carro encontrado no banco") 
+    return carro
+
 @app.get("/carros/{carro_id}")
 def obter_carro(carro_id: int, db: Session = Depends(get_db)):
     carro = db.query(CarroModel).filter(CarroModel.id == carro_id).first()
     if not carro:
         raise HTTPException(status_code=404, detail="Carro não encontrado")
     return carro
+
+@app.get("/carros/buscar")
+def buscar_carros(
+    marca: Optional[str] = None, 
+    modelo: Optional[str] = None, 
+    db: Session = Depends(get_db)
+):
+    query = db.query(CarroModel)
+    
+    if marca:
+        # O 'ilike' faz uma busca insensível a maiúsculas/minúsculas
+        query = query.filter(CarroModel.marca.ilike(f"%{marca}%"))
+    
+    if modelo:
+        query = query.filter(CarroModel.modelo.ilike(f"%{modelo}%"))
+    
+    return query.all()
 
 @app.post("/carros")
 def criar_carro(carro: CarroCreate, db: Session = Depends(get_db)):
