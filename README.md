@@ -28,6 +28,7 @@ Abra o seu terminal e rode:
 Bash
 git clone https://github.com/Otoque/Api-Carros/tree/main
 cd NOME_DO_REPOSITORI
+
 2. Criar e Ativar o Ambiente Virtual (Virtualenv)
 Para manter as dependências organizadas e não afetar seu sistema:
 
@@ -41,11 +42,13 @@ No Windows:
 Bash
 python -m venv venv
 venv\Scripts\activate
+
 3. Instalar as Dependências
 Com o ambiente virtual ativado, instale os pacotes necessários:
 
 Bash
 pip install -r requirements.txt
+
 4. Rodar a API
 Execute o servidor Uvicorn:
 
