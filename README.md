@@ -26,7 +26,7 @@ Uvicorn: Servidor ASGI para rodar a aplicação.
 Abra o seu terminal e rode:
 
 Bash
-git clone https://github.com/Otoque/Api-Carros/tree/main
+git clone https://github.com/Otoque/Api-Carros
 cd NOME_DO_REPOSITORI
 
 2. Criar e Ativar o Ambiente Virtual (Virtualenv)
