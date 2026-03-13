@@ -1,27 +1,31 @@
 async function searchCar() {
     try {
-        const response = await fetch(
-            "https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvaluesextended/1HGCM82633A004352?format=json"
-        );
-        const data = await response.json();
-        const car = data.Results[0];
 
-        const marca = car.Make || "Desconhecida";
-        const modelo = car.Model || "Desconhecido";
-        const ano = car.ModelYear || "Desconhecido";
-        const trim = car.Trim || "";
+        const response = await fetch("http://127.0.0.1:8000/carros/aleatorio");
+        const car = await response.json();
+
+        const marca = car.marca || "Desconhecida";
+        const modelo = car.modelo || "Desconhecido";
+        const ano = car.anoModelo || "Desconhecido";
+        const trim = car.trim || "";
+        const modeloMotor = car.modeloMotor || "Desconhecido";
+        const combustivel = car.principalCombustivel || "Desconhecido";
 
         const carInfo = `${marca} ${modelo} ${ano} ${trim}`;
 
-        // Mostrar informações básicas
-        document.getElementById("vinCar").innerHTML = carInfo;
+        const motorInfo = `Motor: ${modeloMotor} | Combustível: ${combustivel}`;
 
-        // Mostrar imagem usando Placehold.co (grátis)
-        document.getElementById("carImage").src = `https://placehold.co/400x200?text=${encodeURIComponent(carInfo)}`;
+        // Mostrar nome do carro
+        document.getElementById("vinCar").innerText = carInfo;
+
+        // Mostrar informações do motor
+        document.getElementById("motorCar").innerText = motorInfo;
+
+        // Imagem placeholder
+        document.getElementById("carImage").src =
+        `https://placehold.co/400x200?text=${encodeURIComponent(carInfo)}`;
 
     } catch (error) {
-        console.error("Erro ao buscar informações do carro:", error);
-        document.getElementById("vinCar").innerHTML = "Erro ao buscar informações do carro.";
-        document.getElementById("carImage").src = "";
+        
     }
 }

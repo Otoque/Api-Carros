@@ -6,6 +6,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # Configuração do Banco de Dados
@@ -99,6 +101,14 @@ class FabricanteModel(Base):
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dependência para abrir/fechar a conexão por requisição
 def get_db():
