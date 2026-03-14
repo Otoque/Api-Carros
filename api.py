@@ -1,3 +1,4 @@
+from typing import List
 from typing import Optional
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Float
@@ -39,6 +40,7 @@ class CarroCreate(BaseModel):
     cilindradaPC: float 
     principalCombustivel: str
     secundarioCombustivel: Optional[str] = None
+    imagem: str
 
     # Fabricante
     fabricante: str
@@ -79,6 +81,9 @@ class CarroModel(Base):
     # Combustíveis
     principalCombustivel = Column(String)
     secundarioCombustivel = Column(String, nullable=True)
+
+    # Imagem do carro
+    imagem = Column(String,nullable=True)
 
     # Chave estrangeira ligando ao fabricante
     fabricante_id = Column(Integer, ForeignKey("fabricantes.id"))
@@ -155,45 +160,66 @@ def buscar_carros(
     return query.all()
 
 @app.post("/carros")
-def criar_carro(carro: CarroCreate, db: Session = Depends(get_db)):
-    # 1. Cria o fabricante 
-    novo_fabricante = FabricanteModel(
-        fabricante=carro.fabricante,
-        idFabricante=carro.idFabricante,
-        nomeFabricante=carro.nomeFabricante,
-        cidadeFabricante=carro.cidadeFabrincante,
-        estadoFabricante=carro.estadoFabricante,
-        paisFabricante=carro.paisFabricante
-    )
-    db.add(novo_fabricante)
-    db.commit() 
-    db.refresh(novo_fabricante)
+async def criar_carros(carros: List[CarroCreate], db: Session = Depends(get_db)):
 
-    # 2. Cria o carro 
-    novo_carro = CarroModel(
-        vin=carro.vin,
-        marca=carro.marca,
-        idMarca=carro.idMarca,
-        modelo=carro.modelo,
-        idModelo=carro.idModelo,
-        anoModelo=carro.anoModelo,
-        serie=carro.serie,
-        trim=carro.trim,
-        tipoVeiculo=carro.tipoVeiculo,
-        modeloMotor=carro.modeloMotor,
-        configuracaoMotor=carro.configuracaoMotor,
-        numeroCilindros=carro.numeroCilindros,
-        potenciaHP=carro.potenciaHP,
-        potenciaKW=carro.potenciaKW,
-        cilindradaL=carro.cilindradaL,
-        cilindradaCC=carro.cilindradaCC,
-        cilindradaPC=carro.cilindradaPC,
-        principalCombustivel=carro.principalCombustivel,
-        secundarioCombustivel=carro.secundarioCombustivel,
-        fabricante_id=novo_fabricante.id 
-    )
-    db.add(novo_carro)
+    carros_db = []
+
+    for carro in carros:
+
+        # 🔹 verifica se o VIN já existe
+        vin_existente = db.query(CarroModel).filter(
+            CarroModel.vin == carro.vin
+        ).first()
+
+        if vin_existente:
+            continue  # ignora esse carro
+
+        fabricante = db.query(FabricanteModel).filter(
+            FabricanteModel.idFabricante == carro.idFabricante
+        ).first()
+
+        if not fabricante:
+            fabricante = FabricanteModel(
+                fabricante=carro.fabricante,
+                idFabricante=carro.idFabricante,
+                nomeFabricante=carro.nomeFabricante,
+                cidadeFabricante=carro.cidadeFabrincante,
+                estadoFabricante=carro.estadoFabricante,
+                paisFabricante=carro.paisFabricante
+            )
+            db.add(fabricante)
+            db.flush()
+
+        novo_carro = CarroModel(
+            vin=carro.vin,
+            marca=carro.marca,
+            idMarca=carro.idMarca,
+            modelo=carro.modelo,
+            idModelo=carro.idModelo,
+            anoModelo=carro.anoModelo,
+            serie=carro.serie,
+            trim=carro.trim,
+            tipoVeiculo=carro.tipoVeiculo,
+            modeloMotor=carro.modeloMotor,
+            configuracaoMotor=carro.configuracaoMotor,
+            numeroCilindros=carro.numeroCilindros,
+            potenciaHP=carro.potenciaHP,
+            potenciaKW=carro.potenciaKW,
+            cilindradaL=carro.cilindradaL,
+            cilindradaCC=carro.cilindradaCC,
+            cilindradaPC=carro.cilindradaPC,
+            principalCombustivel=carro.principalCombustivel,
+            secundarioCombustivel=carro.secundarioCombustivel,
+            imagem=carro.imagem,
+            fabricante_id=fabricante.id
+        )
+
+        carros_db.append(novo_carro)
+
+    db.add_all(carros_db)
     db.commit()
-    db.refresh(novo_carro)
-    
-    return {"carro": novo_carro, "fabricante": novo_fabricante}
+
+    return {
+        "inseridos": len(carros_db),
+        "carros": carros_db
+    }
