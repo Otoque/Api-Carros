@@ -1,6 +1,5 @@
 async function searchCar() {
     try {
-
         const response = await fetch("http://127.0.0.1:8000/carros/aleatorio");
         const car = await response.json();
 
@@ -87,6 +86,8 @@ async function searchCar() {
         const query = `${identificacao.marca} ${identificacao.modelo} car`;
 
         document.getElementById("carImage").src = identificacao.imagem;
+
+        window.scrollTo({top: 0, behavior: "smooth"});
 
     } catch (error) {
         console.error("Erro ao buscar carro:", error);
