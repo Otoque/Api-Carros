@@ -1,79 +1,205 @@
-🚗 API de Carros Aleatórios
-Esta é uma API desenvolvida em Python utilizando FastAPI e SQLAlchemy. O projeto permite o gerenciamento de uma base de dados de veículos, com foco em retornar veículos aleatórios e detalhes técnicos, incluindo informações sobre o fabricante vinculadas via relacionamento de banco de dados.
+# 🚗 API de Carros
 
-🚀 Funcionalidades
-Listagem Completa: Retorna todos os carros cadastrados.
+API REST desenvolvida em **Python** utilizando **FastAPI** para fornecer informações detalhadas sobre veículos.
 
-Carro Aleatório: Sorteia um veículo do banco de dados e retorna seus dados técnicos junto com as informações do fabricante (JOIN).
+O projeto foi criado com o objetivo de disponibilizar um conjunto de dados estruturados sobre carros, incluindo informações técnicas do veículo, dados do motor, combustível e fabricante.
 
-Busca por Filtros: Permite buscar carros por marca ou modelo.
+A API permite consultar carros cadastrados em um banco de dados e retornar essas informações de forma simples através de endpoints HTTP.
 
-Cadastro: Endpoint para salvar novos veículos e seus respectivos fabricantes.
+---
 
-🛠️ Tecnologias Utilizadas
-FastAPI: Framework moderno e rápido para construção de APIs.
+# 📌 Objetivo do Projeto
 
-SQLAlchemy: ORM para mapeamento e manipulação do banco de dados.
+Este projeto foi desenvolvido para praticar conceitos importantes de desenvolvimento backend, incluindo:
 
-SQLite: Banco de dados relacional (arquivo local) para desenvolvimento.
+- Criação de APIs REST
+- Modelagem de banco de dados
+- Relacionamentos entre tabelas
+- Organização de código backend
+- Integração entre API e aplicações frontend
 
-Pydantic: Validação de dados e criação de schemas.
+---
 
-Uvicorn: Servidor ASGI para rodar a aplicação.
+# 🛠️ Tecnologias Utilizadas
 
-📥 Como baixar e usar o projeto
-1. Clonar o repositório
-Abra o seu terminal e rode:
+O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
-Bash
-git clone https://github.com/Otoque/Api-Carros
-cd NOME_DO_REPOSITORI
+- **Python**
+- **FastAPI**
+- **SQLAlchemy**
+- **SQLite**
+- **Pydantic**
+- **Uvicorn**
 
-2. Criar e Ativar o Ambiente Virtual (Virtualenv)
-Para manter as dependências organizadas e não afetar seu sistema:
+---
 
-No Linux/Mac:
+# 📂 Estrutura do Projeto
 
-Bash
-python3 -m venv venv
-source venv/bin/activate
-No Windows:
+Api-Carros
+│
+├── api.py # Arquivo principal da API
+├── carros.db # Banco de dados SQLite com os dados dos carros
+├── requirements.txt # Dependências do projeto
+├── .gitignore
+└── README.md
 
-Bash
+---
+
+# ⚙️ Como executar o projeto localmente
+
+### 1️⃣ Clone o repositório
+
+git clone https://github.com/Otoque/Api-Carros.git
+
+---
+
+### 2️⃣ Entre na pasta do projeto
+
+cd Api-Carros
+
+---
+
+### 3️⃣ Crie um ambiente virtual
+
 python -m venv venv
-venv\Scripts\activate
 
-3. Instalar as Dependências
-Com o ambiente virtual ativado, instale os pacotes necessários:
+---
 
-Bash
+### 4️⃣ Ative o ambiente virtual
+
+Linux / Mac
+
+source venv/bin/activate
+
+Windows
+
+/venv/bin/Scripts/activate
+
+---
+
+### 5️⃣ Instale as dependências
+
 pip install -r requirements.txt
 
-4. Rodar a API
-Execute o servidor Uvicorn:
+---
 
-Bash
+## 6️⃣ Execute a API:
+
 uvicorn api:app --reload
-A API estará disponível em: http://127.0.0.1:8000
 
-📖 Documentação e Testes
-O FastAPI gera automaticamente uma documentação interativa. Com a API rodando, acesse:
+---
 
-Swagger UI: http://127.0.0.1:8000/docs (Para testar os endpoints visualmente).
+### 7️⃣ Acesse a API
 
-Redoc: http://127.0.0.1:8000/redoc (Documentação detalhada).
+http://127.0.0.1:8000
 
-Exemplo de Resposta (GET /carros/aleatorio)
-JSON
-{
-  "modelo": "330i",
-  "marca": "BMW",
-  "anoModelo": 2004,
-  "fabricante_obj": {
-    "nomeFabricante": "Regensburg Plant",
-    "cidadeFabricante": "Regensburg",
-    "paisFabricante": "Alemanha"
-  }
-}
-📝 Licença
-Este projeto está sob a licença MIT. Sinta-se livre para usar e modificar.
+---
+
+# 📖 Documentação da API
+
+O FastAPI gera automaticamente uma interface de documentação interativa.
+
+Swagger UI:
+
+http://127.0.0.1:8000/docs
+
+Nela é possível:
+
+- testar os endpoints
+- visualizar respostas
+- enviar requisições diretamente pelo navegador
+
+---
+
+# 🔎 Endpoints da API
+
+## Listar todos os carros
+
+GET /carros
+
+Retorna todos os carros cadastrados no banco de dados.
+
+---
+
+## Buscar um carro aleatório
+
+GET /carros/aleatorio
+
+Retorna um carro aleatório do banco de dados.
+
+---
+
+# 📊 Estrutura dos Dados
+
+Cada carro possui informações como:
+
+- VIN (identificação do veículo)
+- Marca
+- Modelo
+- Ano do modelo
+- Série e versão
+- Tipo de veículo
+
+Além disso, a API retorna informações técnicas do motor:
+
+- Modelo do motor
+- Configuração do motor
+- Número de cilindros
+- Potência (HP e KW)
+- Cilindrada
+
+Também são retornados dados de combustível:
+
+- Combustível principal
+- Combustível secundário
+
+---
+
+# 🏭 Fabricante
+
+Cada carro está associado a um fabricante contendo informações como:
+
+- Nome do fabricante
+- Cidade
+- Estado
+- País
+
+O relacionamento entre carros e fabricantes é feito através de **chaves estrangeiras no banco de dados**.
+
+---
+
+# 🗄️ Banco de Dados
+
+O projeto utiliza **SQLite** como banco de dados.
+
+O banco possui duas tabelas principais:
+
+- **Carros**
+- **Fabricantes**
+
+Cada fabricante pode possuir vários carros associados.
+
+---
+
+# 🚀 Possíveis Melhorias Futuras
+
+Algumas melhorias que podem ser implementadas no projeto:
+
+- Endpoint para buscar carros por marca
+- Endpoint para buscar carros por ano
+- Paginação de resultados
+- Autenticação na API
+- Deploy com banco de dados externo (PostgreSQL)
+- Interface frontend consumindo a API
+
+---
+
+# 👨‍💻 Autor
+
+Projeto desenvolvido por **Nicolas Tavares**.
+
+---
+
+# 📄 Licença
+
+Este projeto é livre para uso educacional e estudos.
