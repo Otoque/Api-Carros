@@ -35,13 +35,13 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 # 📂 Estrutura do Projeto
 
-Api-Carros
-│
-├── api.py # Arquivo principal da API
-├── carros.db # Banco de dados SQLite com os dados dos carros
-├── requirements.txt # Dependências do projeto
-├── .gitignore
-└── README.md
+Api-Carros<br>
+│<br>
+├── api.py # Arquivo principal da API<br>
+├── carros.db # Banco de dados SQLite com os dados dos carros<br>
+├── requirements.txt # Dependências do projeto<br>
+├── .gitignore<br>
+└── README.md<br>
 
 ---
 
