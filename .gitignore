@@ -1,0 +1,18 @@
+# ambiente virtual
+venv/
+
+# cache python
+__pycache__/
+*.pyc
+
+# banco local
+*.db
+
+# arquivos de ambiente
+.env
+
+# vscode
+.vscode/
+
+# sistema
+.DS_Store
